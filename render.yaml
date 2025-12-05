@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: igosint-backend
+    env: python
+    language: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    envVars:
+      - key: IG_BOT_USER
+        value: rock.ingman2004
+      - key: IG_BOT_PASS
+        value: Kkk123@#
+      - key: FLASK_ENV
+        value: production
