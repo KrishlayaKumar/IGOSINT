@@ -1,5 +1,5 @@
 // static/profile.js
-const API_URL = '';
+const API_URL = 'https://igosint-3r8r.onrender.com';
 // If front-end gets hosted separately, set:
 // const API_URL = 'https://your-backend-url.com';
 
