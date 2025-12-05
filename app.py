@@ -21,8 +21,8 @@ CORS(app)
 #  Instagram bot account (LOCAL / EDUCATIONAL USE ONLY)
 #  WARNING: Hard-coding credentials is NOT safe for real deployment.
 # ----------------------------------------------------
-IG_BOT_USER = os.getenv("IG_BOT_USER") or "rock.ingman2004"
-IG_BOT_PASS = os.getenv("IG_BOT_PASS") or "Kkk123@#"
+IG_BOT_USER = os.getenv("IG_BOT_USER") 
+IG_BOT_PASS = os.getenv("IG_BOT_PASS") 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
