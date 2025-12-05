@@ -120,9 +120,32 @@ This project uses a backend-only login via Instaloader.
 
 Configured bot account credentials can be set via:
 - Environment variables: `IG_BOT_USER` and `IG_BOT_PASS`
-- Fallback hardcoded values (for local development only)
 
 **Security Note:** Never commit real credentials to public repositories. Use environment variables in production.
+
+## 🚀 Deployment
+
+### Environment Variables (Required)
+
+Before deploying, configure these environment variables on your hosting platform (Render/Vercel):
+
+```bash
+# Instagram Bot Credentials
+IG_BOT_USER=your_instagram_username
+IG_BOT_PASS=your_instagram_password
+```
+
+**On Render.com:**
+1. Go to your service settings
+2. Navigate to "Environment"
+3. Add `IG_BOT_USER` and `IG_BOT_PASS` variables
+4. Save and redeploy
+
+### Important Security Notes
+- ✅ Credentials are pulled from environment variables ONLY
+- ✅ No hardcoded credentials in source code
+- ✅ Use different credentials for development vs production
+- ✅ Rotate credentials if exposed
 
 ---
 
