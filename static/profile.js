@@ -1,5 +1,7 @@
 // static/profile.js
 const API_URL = '';
+// If front-end gets hosted separately, set:
+// const API_URL = 'https://your-backend-url.com';
 
 // basic DOM refs
 const statusIndicator = document.getElementById('status-indicator');

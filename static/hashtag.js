@@ -1,5 +1,7 @@
 // static/hashtag.js
 const API_URL = '';
+// If front-end gets hosted separately, set:
+// const API_URL = 'https://your-backend-url.com';
 
 const statusIndicator = document.getElementById('status-indicator');
 const hashtagForm = document.getElementById('hashtag-form');
