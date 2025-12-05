@@ -11,9 +11,11 @@ from flask import (
 )
 import instaloader
 import requests
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.secret_key = "change-this-to-a-random-secret"
+CORS(app)
 
 # ----------------------------------------------------
 #  Instagram bot account (LOCAL / EDUCATIONAL USE ONLY)
