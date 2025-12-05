@@ -8,6 +8,7 @@
 │      ├── style.css
 │      ├── profile.js
 │      ├── hashtag.js
+│── docs/                  # Screenshots folder
 │── rock.ingman2004.session   # Bot session (ignored in .gitignore)
 │── .gitignore
 │── README.md
@@ -103,9 +104,165 @@ Just like the Instagram explore page — scroll down for more results.
 
 ---
 
+## 🖼️ Screenshots
+
+![Profile Downloader](docs/profile-view.png)
+*Profile downloader interface with analytics and media grid*
+
+![Hashtag Explorer](docs/hashtag-view.png)
+*Hashtag explorer with infinite scrolling*
+
+---
+
 ## 🔐 Authentication (Bot Session)
 
 This project uses a backend-only login via Instaloader.
 
-Configured bot account:
+Configured bot account credentials can be set via:
+- Environment variables: `IG_BOT_USER` and `IG_BOT_PASS`
+- Fallback hardcoded values (for local development only)
 
+**Security Note:** Never commit real credentials to public repositories. Use environment variables in production.
+
+---
+
+## ⚡ How to Run Locally
+
+### Prerequisites
+- Python 3.8+ installed
+- pip package manager
+
+### Windows
+
+```bash
+# Clone the repository
+git clone https://github.com/KrishlayaKumar/IGOSINT.git
+cd IGOSINT
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+.\venv\Scripts\Activate.ps1
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+python app.py
+```
+
+Then visit: **http://localhost:5000**
+
+### Mac / Linux
+
+```bash
+# Clone the repository
+git clone https://github.com/KrishlayaKumar/IGOSINT.git
+cd IGOSINT
+
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+python app.py
+```
+
+Then visit: **http://localhost:5000**
+
+### Verify Backend Session
+
+After starting the server, check if the bot is logged in:
+
+```
+http://localhost:5000/debug/session
+```
+
+You should see:
+```json
+{
+  "is_logged_in": true,
+  "bot_user": "your_bot_username"
+}
+```
+
+---
+
+## 📦 Project Structure
+
+```
+IGOSINT/
+├── app.py                    # Main Flask application
+├── templates/
+│   ├── index.html           # Landing page
+│   ├── profile.html         # Profile scraper page
+│   └── hashtag.html         # Hashtag explorer page
+├── static/
+│   ├── style.css            # Custom CSS
+│   ├── profile.js           # Profile page logic
+│   └── hashtag.js           # Hashtag page logic
+├── docs/                     # Screenshots
+├── .gitignore                # Git ignore file
+└── README.md                 # This file
+```
+
+---
+
+## ⚠️ Disclaimer
+
+This tool is designed for:
+
+- **Educational purposes**  
+- **OSINT research**  
+- **Cybersecurity analysis**  
+- **Academic use**  
+
+**You are responsible for:**
+
+- Complying with Instagram's Terms of Service  
+- Respecting user privacy and data protection laws  
+- Using the tool ethically and legally  
+
+**This tool should NOT be used for:**
+
+- Harassment or stalking  
+- Unauthorized data collection  
+- Violating anyone's privacy  
+- Any illegal activities  
+
+The developers are not responsible for misuse of this software.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Backend:** Flask (Python)  
+- **Frontend:** HTML, Tailwind CSS, JavaScript  
+- **Instagram API:** Instaloader  
+- **Storage:** Session-based authentication  
+- **Export:** JSON + ZIP (JSZip.js, FileSaver.js)  
+
+---
+
+## 👤 Author
+
+**Krishlaya Kumar Singh**  
+GitHub: [@KrishlayaKumar](https://github.com/KrishlayaKumar)
+
+---
+
+## 📝 License
+
+This project is open source and available for educational use. Please use responsibly.
+
+---
+
+## ⭐ Support
+
+If you find this project useful, please give it a star ⭐ on GitHub!
