@@ -58,6 +58,16 @@ def make_loader(require_login: bool = False) -> instaloader.Instaloader:
             print(f"[SESSION] Loaded session for {IG_BOT_USER} from {sfile}")
         except Exception as e:
             print(f"[SESSION] Failed to load session from file: {e}")
+                # Check if loaded session is actually valid
+    if os.path.exists(sfile):
+        try:
+            test_login = L.context.test_login()
+            if test_login is None:
+                print(f"[SESSION] Loaded session invalid (test_login returned None), deleting file")
+                os.remove(sfile)
+        except Exception as e:
+            print(f"[SESSION] Error testing session: {e}")
+
 
     # 2) If require_login and still not logged in -> fresh login
     if require_login and not L.context.is_logged_in:
