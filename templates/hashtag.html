@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashtag Explorer – IGOSINT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+
+<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <a href="{{ url_for('home') }}" class="flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-cyan-400 text-xl"></i>
+                <span class="font-bold text-lg tracking-tight text-white">
+                    IG<span class="text-cyan-400">OSINT</span>
+                </span>
+            </a>
+            <span class="ml-2 text-xs text-slate-500 hidden sm:inline">/ Hashtag Explorer</span>
+        </div>
+        <div id="status-indicator" class="text-xs font-mono text-red-500">
+            <i class="fa-solid fa-circle text-[8px] mr-1"></i> Disconnected
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-4 py-10">
+    <div class="max-w-xl mx-auto text-center mb-10 px-2 sm:px-0">
+        <h1 class="text-3xl font-extrabold text-white mb-3">Hashtag Explorer</h1>
+        <p class="text-slate-400 mb-6 text-sm">
+            Explore public posts by hashtag (e.g. <code>#fitness, #travel</code>).
+        </p>
+
+        <form id="hashtag-form" class="relative group">
+            <div class="absolute inset-0 bg-cyan-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition duration-500"></div>
+            <div class="relative flex items-center bg-slate-900 border border-slate-700 rounded-full p-2 shadow-2xl focus-within:border-cyan-500 transition-colors">
+                <i class="fa-solid fa-hashtag text-slate-500 ml-4"></i>
+                <input 
+                    type="text" 
+                    id="hashtag-input"
+                    placeholder="#fitness, #travel" 
+                    class="bg-transparent border-none outline-none text-white w-full px-4 py-2 placeholder:text-slate-600"
+                    autocomplete="off"
+                >
+                <button 
+                    type="submit"
+                    id="hashtag-btn"
+                    class="bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold px-6 py-2 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Explore
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Loader -->
+    <div id="hashtag-loader" class="hidden flex-col items-center justify-center py-8">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-700 h-10 w-10 mb-4"></div>
+        <p class="text-cyan-500 font-mono text-sm animate-pulse">
+            Fetching hashtag feed via Instaloader...
+        </p>
+    </div>
+
+    <!-- Error -->
+    <div id="hashtag-error-box" class="hidden max-w-2xl mx-auto bg-red-900/20 border border-red-500/50 rounded-lg p-4 text-center mb-6">
+        <p id="hashtag-error-text" class="text-red-400 text-sm"></p>
+    </div>
+
+    <!-- Content -->
+    <div id="hashtag-content" class="hidden space-y-8">
+        <section>
+            <h3 class="text-xl font-bold text-white mb-4 pl-2 border-l-4 border-cyan-500">
+                Hashtag Media
+            </h3>
+
+            <div id="hashtag-media-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+
+            <div id="hashtag-more-loader" class="hidden py-6 text-center text-slate-400 text-sm">
+                Loading more posts...
+            </div>
+            <div id="hashtag-end-marker" class="hidden py-6 text-center text-slate-500 text-xs">
+                You have reached the end of this hashtag feed (for now).
+            </div>
+        </section>
+    </div>
+</main>
+
+<script src="{{ url_for('static', filename='hashtag.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login – IGOSINT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+
+<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <a href="{{ url_for('home') }}" class="flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-cyan-400 text-xl"></i>
+                <span class="font-bold text-lg tracking-tight text-white">
+                    IG<span class="text-cyan-400">OSINT</span>
+                </span>
+            </a>
+            <span class="ml-2 text-xs text-slate-500 hidden sm:inline">/ Login</span>
+        </div>
+        <div id="status-indicator" class="text-xs font-mono text-red-500">
+            <i class="fa-solid fa-circle text-[8px] mr-1"></i> Disconnected
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-md mx-auto px-4 py-12">
+    <h1 class="text-3xl font-extrabold text-white mb-4 text-center">Instagram Login</h1>
+    <p class="text-slate-400 text-sm mb-6 text-center">
+        Login is required only for Hashtag Explorer. Your credentials are used locally
+        to obtain an Instagram session, then discarded.
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="mb-4 space-y-2">
+        {% for category, msg in messages %}
+        <div class="text-sm px-3 py-2 rounded border
+                    {% if category == 'success' %}border-emerald-500 bg-emerald-900/30 text-emerald-200
+                    {% else %}border-red-500 bg-red-900/30 text-red-200{% endif %}">
+            {{ msg }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+        <div>
+            <label class="block text-xs text-slate-400 uppercase mb-1">Instagram Username</label>
+            <input type="text" name="username" required
+                   class="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-sm outline-none focus:border-cyan-500">
+        </div>
+        <div>
+            <label class="block text-xs text-slate-400 uppercase mb-1">Password</label>
+            <input type="password" name="password" required
+                   class="w-full bg-slate-950 border border-slate-700 rounded-md px-3 py-2 text-sm outline-none focus:border-cyan-500">
+        </div>
+        <button type="submit"
+                class="w-full mt-2 bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-semibold py-2 rounded-md text-sm transition">
+            Login & Save Session
+        </button>
+        <p class="text-[11px] text-slate-500 mt-2">
+            Tip: For 2FA accounts, it may be easier to first login using the
+            Instaloader CLI (<code>instaloader -l your_user</code>) and then refresh this page.
+        </p>
+    </form>
+</main>
+
+<script>
+const API_URL = '';
+const statusIndicator = document.getElementById('status-indicator');
+async function checkBackend() {
+    try {
+        const res = await fetch(`${API_URL}/health`);
+        if (res.ok) {
+            statusIndicator.innerHTML =
+                '<i class="fa-solid fa-circle text-[8px] mr-1 text-green-500"></i> Server Online';
+            statusIndicator.className = 'text-xs font-mono text-green-500';
+        } else { throw new Error(); }
+    } catch (e) {
+        statusIndicator.innerHTML =
+            '<i class="fa-solid fa-circle text-[8px] mr-1 text-red-500"></i> Server Offline (Run app.py)';
+        statusIndicator.className = 'text-xs font-mono text-red-500';
+    }
+}
+checkBackend();
+</script>
+</body>
+</html>

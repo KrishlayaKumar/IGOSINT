@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Downloader – IGOSINT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+
+<nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <a href="{{ url_for('home') }}" class="flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-cyan-400 text-xl"></i>
+                <span class="font-bold text-lg tracking-tight text-white">
+                    IG<span class="text-cyan-400">OSINT</span>
+                </span>
+            </a>
+            <span class="ml-2 text-xs text-slate-500 hidden sm:inline">/ Profile Downloader</span>
+        </div>
+        <div id="status-indicator" class="text-xs font-mono text-red-500">
+            <i class="fa-solid fa-circle text-[8px] mr-1"></i> Disconnected
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-6xl mx-auto px-4 py-10">
+
+    <!-- Search header -->
+    <div class="max-w-xl mx-auto text-center mb-10 px-2 sm:px-0">
+        <h1 class="text-3xl font-extrabold text-white mb-3">Profile Downloader</h1>
+        <p class="text-slate-400 mb-6 text-sm">
+            Enter a username to extract public profile data and media.
+        </p>
+
+        <form id="profile-search-form" class="relative group">
+            <div class="absolute inset-0 bg-cyan-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition duration-500"></div>
+            <div class="relative flex items-center bg-slate-900 border border-slate-700 rounded-full p-2 shadow-2xl focus-within:border-cyan-500 transition-colors">
+                <i class="fa-solid fa-user text-slate-500 ml-4"></i>
+                <input 
+                    type="text" 
+                    id="profile-username-input"
+                    placeholder="username (e.g. dishapatani)" 
+                    class="bg-transparent border-none outline-none text-white w-full px-4 py-2 placeholder:text-slate-600"
+                    autocomplete="off"
+                >
+                <button 
+                    type="submit"
+                    id="profile-search-btn"
+                    class="bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold px-6 py-2 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Search
+                </button>
+            </div>
+        </form>
+
+        <!-- Hero type pills -->
+        <div class="mt-4 flex flex-wrap justify-center gap-2">
+            <button type="button"
+                    data-hero-type="all"
+                    class="profile-hero-pill bg-cyan-500 text-slate-900 text-xs px-3 py-1.5 rounded-full border border-cyan-400">
+                All
+            </button>
+            <button type="button"
+                    data-hero-type="posts"
+                    class="profile-hero-pill bg-slate-800 text-slate-200 text-xs px-3 py-1.5 rounded-full border border-slate-700">
+                Posts
+            </button>
+            <button type="button"
+                    data-hero-type="reels"
+                    class="profile-hero-pill bg-slate-800 text-slate-200 text-xs px-3 py-1.5 rounded-full border border-slate-700">
+                Reels
+            </button>
+        </div>
+    </div>
+
+    <!-- Loader -->
+    <div id="profile-loader" class="hidden flex-col items-center justify-center py-8">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-slate-700 h-10 w-10 mb-4"></div>
+        <p class="text-cyan-500 font-mono text-sm animate-pulse">
+            Fetching profile via Instaloader...
+        </p>
+    </div>
+
+    <!-- Error -->
+    <div id="profile-error-box" class="hidden max-w-2xl mx-auto bg-red-900/20 border border-red-500/50 rounded-lg p-4 text-center mb-6">
+        <p id="profile-error-text" class="text-red-400 text-sm"></p>
+    </div>
+
+    <!-- Content -->
+    <div id="profile-content" class="hidden space-y-8">
+
+        <!-- Profile card -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-8 shadow-2xl">
+            <div class="w-32 h-32 rounded-full p-1 bg-gradient-to-tr from-yellow-500 to-purple-600 shrink-0">
+                <img id="profile-pic" src="" alt="Profile" class="w-full h-full rounded-full object-cover bg-black">
+            </div>
+
+            <div class="flex-1 text-center md:text-left w-full">
+                <div class="flex items-center justify-center md:justify-start gap-2 mb-2">
+                    <h2 id="profile-username" class="text-2xl font-bold text-white"></h2>
+                    <i id="verified-badge" class="hidden fa-solid fa-circle-check text-blue-500"></i>
+                    <span id="private-badge" class="hidden bg-slate-700 text-xs px-2 py-0.5 rounded ml-2">
+                        Private
+                    </span>
+                </div>
+                <p id="profile-fullname" class="text-slate-300 font-semibold mb-1"></p>
+                <p id="profile-bio" class="text-slate-400 text-sm mb-4 whitespace-pre-wrap"></p>
+
+                <div class="flex flex-wrap justify-center md:justify-start gap-6 text-sm border-t border-slate-800 pt-4 mt-4">
+                    <div>
+                        <span id="stat-followers" class="font-bold text-white block text-xl"></span>
+                        Followers
+                    </div>
+                    <div>
+                        <span id="stat-following" class="font-bold text-white block text-xl"></span>
+                        Following
+                    </div>
+                    <div>
+                        <span id="stat-posts" class="font-bold text-white block text-xl"></span>
+                        Posts
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stories -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-pink-500"></span> Stories
+            </h3>
+            <p id="stories-message" class="text-xs text-slate-400"></p>
+            <div id="stories-strip" class="flex overflow-x-auto no-scrollbar gap-2"></div>
+        </section>
+
+        <!-- Reels -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-500"></span> Reels
+            </h3>
+            <p id="reels-message" class="text-xs text-slate-400"></p>
+            <div id="reels-strip" class="flex overflow-x-auto no-scrollbar gap-2"></div>
+        </section>
+
+        <!-- Highlights -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-yellow-400"></span> Highlights
+            </h3>
+            <p id="highlights-message" class="text-xs text-slate-400"></p>
+            <div id="highlights-strip" class="flex overflow-x-auto no-scrollbar gap-2"></div>
+        </section>
+
+        <!-- Filters + Export -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-5 flex flex-wrap items-center gap-4 justify-between">
+
+            <div class="flex flex-wrap gap-3 items-center">
+                <div class="flex items-center gap-2">
+                    <label class="text-xs text-slate-400 uppercase tracking-wide">Type</label>
+                    <select id="profile-filter-type" class="bg-slate-800 border border-slate-700 rounded-md px-2 py-1 text-sm">
+                        <option value="all">All</option>
+                        <option value="image">Images</option>
+                        <option value="video">Videos</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <label class="text-xs text-slate-400 uppercase tracking-wide">Min Likes</label>
+                    <input id="profile-filter-likes" type="number" min="0" placeholder="0"
+                           class="bg-slate-800 border border-slate-700 rounded-md px-2 py-1 text-sm w-20">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <label class="text-xs text-slate-400 uppercase tracking-wide">Sort</label>
+                    <select id="profile-sort-order" class="bg-slate-800 border border-slate-700 rounded-md px-2 py-1 text-sm">
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="likes_desc">Most liked</option>
+                        <option value="likes_asc">Least liked</option>
+                    </select>
+                </div>
+
+                <button id="profile-apply-filters"
+                        class="bg-slate-800 hover:bg-cyan-600 hover:text-slate-900 border border-slate-700 rounded-md px-3 py-1.5 text-xs font-semibold transition">
+                    Apply Filters
+                </button>
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+                <div class="relative group">
+                    <button id="profile-export-json"
+                            class="bg-slate-800 hover:bg-emerald-500 hover:text-slate-900 border border-emerald-500/50 rounded-md px-3 py-1.5 text-xs font-semibold flex items-center gap-1 transition">
+                        <i class="fa-solid fa-file-code text-[11px]"></i>
+                        Export JSON
+                    </button>
+                    <div class="tooltip">
+                        Download profile + all loaded posts metadata.
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <button id="profile-export-zip"
+                            class="bg-slate-800 hover:bg-cyan-500 hover:text-slate-900 border border-cyan-500/50 rounded-md px-3 py-1.5 text-xs font-semibold flex items-center gap-1 transition">
+                        <i class="fa-solid fa-file-zipper text-[11px]"></i>
+                        Export Media ZIP
+                    </button>
+                    <div class="tooltip">
+                        Download all loaded images and videos in one ZIP.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Media grid -->
+        <section>
+            <h3 class="text-xl font-bold text-white mb-4 pl-2 border-l-4 border-cyan-500">
+                Profile Media
+            </h3>
+
+            <div id="profile-media-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+
+            <div id="profile-more-loader" class="hidden py-6 text-center text-slate-400 text-sm">
+                Loading more posts...
+            </div>
+            <div id="profile-end-marker" class="hidden py-6 text-center text-slate-500 text-xs">
+                You have reached the end of this profile's public posts.
+            </div>
+        </section>
+
+        <!-- Analytics -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-chart-line text-cyan-400"></i> Profile Analytics
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+
+                <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3">
+                    <p class="text-xs text-slate-400 uppercase mb-1">Loaded Media</p>
+                    <p id="profile-an-total-media" class="text-2xl font-bold text-white">0</p>
+                    <p id="profile-an-range" class="text-xs text-slate-500 mt-1"></p>
+                </div>
+
+                <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3">
+                    <p class="text-xs text-slate-400 uppercase mb-1">Average Posts / Day</p>
+                    <p id="profile-an-avg-per-day" class="text-2xl font-bold text-white">0</p>
+                    <p class="text-xs text-slate-500 mt-1">Based on loaded posts</p>
+                </div>
+
+                <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3">
+                    <p class="text-xs text-slate-400 uppercase mb-1">Most Liked (Loaded)</p>
+                    <ul id="profile-an-top-liked" class="text-xs text-slate-300 space-y-1 mt-1"></ul>
+                </div>
+
+            </div>
+        </section>
+    </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="{{ url_for('static', filename='profile.js') }}"></script>
+</body>
+</html>
