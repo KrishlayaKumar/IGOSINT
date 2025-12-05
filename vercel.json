@@ -1,12 +1,10 @@
 {
   "env": {
-    "NEXT_PUBLIC_API_URL": "@api-url"
-  },
+    "NEXT_PUBLIC_API_URL": "https://igosint-3r8r.onrender.com"  },
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://your-render-backend.onrender.com/api/:path*"
-    }
+      "destination": "https://igosint-3r8r.onrender.com/api/:path**"    }
   ],
   "headers": [
     {
