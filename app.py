@@ -194,7 +194,7 @@ def scrape_profile():
         offset, limit_posts = 0, 12
 
     # Posts can be scraped without login (public profiles)
-    L = make_loader(require_login=False)
+    L = make_loader(require_login=True)
 
     try:
         profile = instaloader.Profile.from_username(L.context, username)
