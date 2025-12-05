@@ -65,6 +65,14 @@ def make_loader(require_login: bool = False) -> instaloader.Instaloader:
             if test_login is None:
                 print(f"[SESSION] Loaded session invalid (test_login returned None), deleting file")
                 os.remove(sfile)
+                            L = instaloader.Instaloader(
+                download_videos=False,
+                download_video_thumbnails=False,
+                download_geotags=False,
+                download_comments=False,
+                save_metadata=False,
+                compress_json=False,
+            )
         except Exception as e:
             print(f"[SESSION] Error testing session: {e}")
 
